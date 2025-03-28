@@ -4,24 +4,18 @@ import { before } from "@vendetta/patcher";
 import { sendMessage } from "@vendetta/discord/messages";
 import Settings from "./Settings";
 
-// Set default values if not already stored
-storage.settings ??= {
-    enabled: true,
-    customText: "Sent from my Samsung Smart Fridge",
-};
+// Default text if the user hasn't set one
+storage.customText ??= "Sent from my Samsung Smart Fridge";
 
 // Patch sendMessage to modify outgoing messages
 const patch = before("sendMessage", sendMessage, ([channelId, message]) => {
-    if (storage.settings.enabled && message?.content) {
-        message.content += ` (${storage.settings.customText})`;
+    if (message?.content) {
+        message.content += ` (${storage.customText})`;
     }
 });
 
 // Register settings page
 const settingsEntry = addSettings("Smart Fridge Sender", Settings);
-
-// Plugin load
-export function onLoad() {}
 
 // Plugin unload
 export function onUnload() {
