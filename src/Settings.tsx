@@ -1,18 +1,26 @@
-import { storage } from "@vendetta/plugin";
-import { useProxy } from "@vendetta/storage";
-import { General } from "@vendetta/ui/components";
+import { React } from "@vendetta/metro/common";
+import { storage } from "@vendetta/storage";
+import { SettingPage, SettingText } from "@vendetta/ui/components";
 
-const { FormInput } = General;
+const DEFAULT_PREFIX = "Discord from PS2";
 
-export default function Settings() {
-    useProxy(storage);
+export default function Settings(): React.ReactElement {
+  const [prefix, setPrefix] = React.useState(storage.prefix || DEFAULT_PREFIX);
 
-    return (
-        <FormInput
-            title="Custom Text"
-            placeholder="Enter your custom message"
-            value={storage.customText}
-            onChange={(value) => (storage.customText = value)}
-        />
-    );
+  const onChange = (text: string) => {
+    setPrefix(text);
+    storage.prefix = text;
+  };
+
+  return (
+    <SettingPage title="Discord from PS2 Settings">
+      <SettingText
+        label="Message Prefix"
+        description="Text prepended to every message you send."
+        value={prefix}
+        onChangeText={onChange}
+        placeholder={DEFAULT_PREFIX}
+      />
+    </SettingPage>
+  );
 }
